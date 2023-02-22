@@ -9,7 +9,7 @@
 
 ## Rotas do projeto
 
-Todas as rotas foram feitas no arquivo API do arquivo routes do laravel 
+Todas as rotas foram feitas no arquivo API da pasta routes do laravel 
 
 
 ### Buscando todos os dados listados.
