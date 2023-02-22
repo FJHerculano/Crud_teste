@@ -30,6 +30,13 @@ class ProjectsController extends Controller
     // cria um novo projeto
     public function createProject(CreateProjectRequest $req){
 
+        // A situação vai sempre ser cadastrada como default, mas ela vai ser editada sempre no front
+        // O status sempre será true por default.
+        if($req->data_initial <= $req->deadline){
+            $situacao = "Em dia";
+        }else{
+            $situacao = "Cuidado";
+        }
 
         $project = Project::create([
             'project' => $req->project,
@@ -38,40 +45,30 @@ class ProjectsController extends Controller
             'deadline' => $req->deadline,
             'budget' => $req->budget,
             'status' => 1,
-            'situacao' => "Em dia",
+            'situacao' => $situacao,
         ]);
 
         return $project;
     }
 
-    // corrigir editar projeto
+    // Editar projeto
     public function updateProject(Request $req){
        
-        $project = Project::find($req->id)->update(
-            [
-                'project' => $req->project,
-                'client' => $req->client,
-                'date_initial' => $req->date_initial,
-                'deadline' => $req->deadline,
-                'budget' => $req->budget,
-                'status' => $req->status,
-                'situacao' => $req->situacao ,
-            ]
-        );
+        $project = Project::find($req->id);
 
-        // if(!$project){
-        //     return response(["Project not found"], 404);
-        // }
+        if(!$project){
+            return response(["Project not found"], 404);
+        }
+        
+        $req->project  ? $project->project  = $req->project  : null;
+        $req->client   ? $project->client   = $req->client   : null;
+        $req->deadline ? $project->deadline = $req->deadline : null;
+        $req->budget   ? $project->budget   = $req->budget   : null;
+        $req->status   ? $project->status   = $req->status   : null;
+        $req->situacao ? $project->situacao = $req->situacao : null;
+        $req->date_initial ? $project->date_initial = $req->date_initial : null;        
 
-        // $project->project  = $req->project  ;
-        // $project->client   = $req->client   ;
-        // $project->deadline = $req->deadline ;
-        // $project->budget   = $req->budget   ;
-        // $project->status   = $req->status   ;
-        // $project->situacao = $req->situacao  ;
-        // $project->date_initial = $req->date_initial ;
-
-        // $project->save();
+        $project->save();
 
         return $project;
     }
